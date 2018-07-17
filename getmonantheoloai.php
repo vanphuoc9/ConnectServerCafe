@@ -9,7 +9,7 @@
   // $idloai = 1;
   
   // biến này giới hạn giá trị dữ liệu về
-  $space = 4;
+  $space = 6;
     //  xác định vị trí đầu tiên
   // ví vụ lần đầu load từ 1->5 lần sau load từ 6->10
   $limit = ($page - 1) * $space;
