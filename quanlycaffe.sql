@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th7 17, 2018 lúc 10:56 SA
+-- Thời gian đã tạo: Th7 18, 2018 lúc 05:42 SA
 -- Phiên bản máy phục vụ: 10.1.21-MariaDB
 -- Phiên bản PHP: 5.6.30
 
@@ -30,6 +30,22 @@ CREATE TABLE `ban` (
   `STTBAN` int(11) NOT NULL,
   `TRANGTHAI` int(100) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Đang đổ dữ liệu cho bảng `ban`
+--
+
+INSERT INTO `ban` (`STTBAN`, `TRANGTHAI`) VALUES
+(1, 0),
+(2, 1),
+(3, 1),
+(4, 0),
+(5, 0),
+(6, 1),
+(7, 0),
+(8, 1),
+(9, 0),
+(10, 0);
 
 -- --------------------------------------------------------
 
@@ -82,6 +98,7 @@ CREATE TABLE `ct_dm` (
   `MAND` int(11) NOT NULL,
   `MAMON` int(11) NOT NULL,
   `STTBAN` int(11) DEFAULT NULL,
+  `SOHD` int(11) NOT NULL,
   `THOIGIAN` datetime DEFAULT NULL,
   `TRANGTHAI` int(100) NOT NULL DEFAULT '0',
   `SOLUONG` int(11) NOT NULL
@@ -167,7 +184,6 @@ CREATE TABLE `diemdanh` (
 
 CREATE TABLE `hoadon` (
   `SOHD` int(11) NOT NULL,
-  `STT` int(11) NOT NULL,
   `MAND` int(11) NOT NULL,
   `THOIGIAN` datetime DEFAULT NULL,
   `TRIGIA` float(8,2) DEFAULT NULL
@@ -358,7 +374,8 @@ ALTER TABLE `ct_dm`
   ADD PRIMARY KEY (`STT`),
   ADD KEY `FK_BAN_DM` (`STTBAN`),
   ADD KEY `FK_CT_DM` (`MAMON`),
-  ADD KEY `FK_NGUOIDUNG_DATMON` (`MAND`);
+  ADD KEY `FK_NGUOIDUNG_DATMON` (`MAND`),
+  ADD KEY `FK_HOADON_DM` (`SOHD`);
 
 --
 -- Chỉ mục cho bảng `ct_dv`
@@ -406,7 +423,6 @@ ALTER TABLE `diemdanh`
 --
 ALTER TABLE `hoadon`
   ADD PRIMARY KEY (`SOHD`),
-  ADD KEY `FK_HOADON_DM` (`STT`),
   ADD KEY `FK_NHANVIEN_THANHTOAN` (`MAND`);
 
 --
@@ -477,7 +493,7 @@ ALTER TABLE `thoihan`
 -- AUTO_INCREMENT cho bảng `ban`
 --
 ALTER TABLE `ban`
-  MODIFY `STTBAN` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `STTBAN` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT cho bảng `binhluan`
 --
@@ -550,6 +566,7 @@ ALTER TABLE `binhluan`
 ALTER TABLE `ct_dm`
   ADD CONSTRAINT `FK_BAN_DM` FOREIGN KEY (`STTBAN`) REFERENCES `ban` (`STTBAN`),
   ADD CONSTRAINT `FK_CT_DM` FOREIGN KEY (`MAMON`) REFERENCES `mon` (`MAMON`),
+  ADD CONSTRAINT `FK_HOADON_DM` FOREIGN KEY (`SOHD`) REFERENCES `hoadon` (`SOHD`),
   ADD CONSTRAINT `FK_NGUOIDUNG_DATMON` FOREIGN KEY (`MAND`) REFERENCES `nguoidung` (`MAND`);
 
 --
@@ -591,7 +608,6 @@ ALTER TABLE `diemdanh`
 -- Các ràng buộc cho bảng `hoadon`
 --
 ALTER TABLE `hoadon`
-  ADD CONSTRAINT `FK_HOADON_DM` FOREIGN KEY (`STT`) REFERENCES `ct_dm` (`STT`),
   ADD CONSTRAINT `FK_NHANVIEN_THANHTOAN` FOREIGN KEY (`MAND`) REFERENCES `nguoidung` (`MAND`);
 
 --
