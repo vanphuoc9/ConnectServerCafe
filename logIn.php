@@ -17,6 +17,7 @@
 		// lấy quyền
 		$quyen = $row['QUYEN'];
 		$xacnhan = $row['XACNHAN'];
+		$mand = $row['MAND'];
 
 		if(mysqli_num_rows($resultCheckLogin) !=0){
 			if($xacnhan !=0){
@@ -24,6 +25,7 @@
 				$response["message"] = "Đăng nhập tài khoản thành công!";
 			// trả quyền về
 				$response["quyen"] = $quyen;
+				$response["mand"] = $mand;
 
 			}else{
 				$response["success"] = 0;
