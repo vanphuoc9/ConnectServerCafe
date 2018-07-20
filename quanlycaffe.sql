@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th7 18, 2018 lúc 05:42 SA
+-- Thời gian đã tạo: Th7 20, 2018 lúc 04:20 SA
 -- Phiên bản máy phục vụ: 10.1.21-MariaDB
 -- Phiên bản PHP: 5.6.30
 
@@ -19,6 +19,24 @@ SET time_zone = "+00:00";
 --
 -- Cơ sở dữ liệu: `quanlycaffe`
 --
+
+DELIMITER $$
+--
+-- Thủ tục
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CapNhatHoaDon` (IN `mahd` INT)  begin
+	declare tong float;
+	select sum(`ct_dm`.soluong*mon.dongia) into tong 
+								from `ct_dm` join ban on `ct_dm`.STTBAN = ban.STTBAN 
+								join mon on `ct_dm`.MAMON = mon.MAMON
+								where `ct_dm`.sohd = mahd
+								group by `ct_dm`.sohd;
+
+	update hoadon set trigia = tong where sohd = mahd;
+	
+end$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -36,16 +54,16 @@ CREATE TABLE `ban` (
 --
 
 INSERT INTO `ban` (`STTBAN`, `TRANGTHAI`) VALUES
-(1, 0),
+(1, 1),
 (2, 1),
 (3, 1),
-(4, 0),
-(5, 0),
+(4, 1),
+(5, 1),
 (6, 1),
-(7, 0),
+(7, 1),
 (8, 1),
 (9, 0),
-(10, 0);
+(10, 1);
 
 -- --------------------------------------------------------
 
@@ -103,6 +121,33 @@ CREATE TABLE `ct_dm` (
   `TRANGTHAI` int(100) NOT NULL DEFAULT '0',
   `SOLUONG` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Đang đổ dữ liệu cho bảng `ct_dm`
+--
+
+INSERT INTO `ct_dm` (`STT`, `MAND`, `MAMON`, `STTBAN`, `SOHD`, `THOIGIAN`, `TRANGTHAI`, `SOLUONG`) VALUES
+(1, 2, 3, 1, 1, '2018-07-01 02:22:00', 0, 1),
+(3, 2, 5, 6, 7, '2018-07-01 02:22:00', 0, 1),
+(4, 3, 4, 5, 4, '2018-07-18 14:17:28', 0, 1),
+(5, 3, 5, 5, 4, '2018-07-18 14:17:28', 0, 1),
+(6, 3, 3, 10, 3, '2018-07-18 14:18:29', 0, 4),
+(7, 3, 5, 10, 3, '2018-07-18 14:18:29', 0, 1),
+(8, 3, 6, 10, 3, '2018-07-18 14:18:29', 0, 6),
+(9, 3, 4, 7, 2, '2018-07-18 14:25:33', 0, 1),
+(10, 3, 3, 4, 16, '2018-07-19 09:57:44', 0, 1),
+(11, 3, 6, 4, 16, '2018-07-19 09:57:44', 0, 1),
+(12, 3, 4, 2, 17, '2018-07-19 09:59:17', 0, 3),
+(13, 3, 6, 2, 17, '2018-07-19 09:59:17', 0, 1),
+(14, 3, 3, 2, 17, '2018-07-19 09:59:17', 0, 4),
+(15, 3, 3, 2, 17, '2018-07-19 14:36:47', 0, 2),
+(16, 3, 5, 2, 17, '2018-07-19 14:36:47', 0, 2),
+(17, 3, 3, 3, 20, '2018-07-19 14:41:11', 0, 1),
+(18, 3, 5, 3, 20, '2018-07-19 14:41:11', 0, 4),
+(19, 3, 4, 3, 20, '2018-07-19 14:42:08', 0, 3),
+(20, 3, 3, 2, 17, '2018-07-20 09:16:51', 0, 1),
+(21, 3, 3, 8, 21, '2018-07-20 09:17:56', 0, 1),
+(22, 3, 3, 8, 21, '2018-07-20 09:18:41', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -184,10 +229,36 @@ CREATE TABLE `diemdanh` (
 
 CREATE TABLE `hoadon` (
   `SOHD` int(11) NOT NULL,
-  `MAND` int(11) NOT NULL,
+  `MAND` int(11) DEFAULT NULL,
   `THOIGIAN` datetime DEFAULT NULL,
   `TRIGIA` float(8,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Đang đổ dữ liệu cho bảng `hoadon`
+--
+
+INSERT INTO `hoadon` (`SOHD`, `MAND`, `THOIGIAN`, `TRIGIA`) VALUES
+(1, 4, '2018-07-18 03:15:00', 1000000.00),
+(2, NULL, NULL, 120000.00),
+(3, NULL, NULL, 1200.00),
+(4, NULL, NULL, 130000.00),
+(6, NULL, NULL, 143000.00),
+(7, NULL, NULL, 263000.00),
+(8, NULL, NULL, 12.00),
+(9, NULL, NULL, 69000.00),
+(10, NULL, NULL, 189000.00),
+(11, NULL, NULL, 120000.00),
+(12, NULL, NULL, 240000.00),
+(13, NULL, NULL, 23000.00),
+(14, NULL, NULL, 120000.00),
+(15, NULL, NULL, 120000.00),
+(16, NULL, NULL, 63000.00),
+(17, NULL, NULL, 607000.00),
+(18, NULL, NULL, 130000.00),
+(19, NULL, NULL, 130000.00),
+(20, NULL, NULL, 115000.00),
+(21, NULL, NULL, 46000.00);
 
 -- --------------------------------------------------------
 
@@ -299,7 +370,7 @@ CREATE TABLE `nguoidung` (
 
 INSERT INTO `nguoidung` (`MAND`, `MACV`, `TEN`, `EMAIL`, `QUYEN`, `MATKHAU`, `REMEMBER_TOKEN`, `XACNHAN`) VALUES
 (2, NULL, 'Phuoc', 'phuoc@gmail.com', 1, '12345', NULL, 0),
-(3, NULL, 'Yen', 'yen@gmail.com', 1, '12345', NULL, 0),
+(3, NULL, 'Yen', 'yen@gmail.com', 1, '12345', NULL, 1),
 (4, NULL, 'Nghia', 'nghia', 0, '12345', NULL, 1);
 
 -- --------------------------------------------------------
@@ -513,7 +584,7 @@ ALTER TABLE `congviec`
 -- AUTO_INCREMENT cho bảng `ct_dm`
 --
 ALTER TABLE `ct_dm`
-  MODIFY `STT` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `STT` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 --
 -- AUTO_INCREMENT cho bảng `dichvu`
 --
@@ -523,7 +594,7 @@ ALTER TABLE `dichvu`
 -- AUTO_INCREMENT cho bảng `hoadon`
 --
 ALTER TABLE `hoadon`
-  MODIFY `SOHD` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `SOHD` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 --
 -- AUTO_INCREMENT cho bảng `khuyenmai`
 --
