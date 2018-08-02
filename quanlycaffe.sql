@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th8 01, 2018 lúc 05:15 SA
+-- Thời gian đã tạo: Th8 02, 2018 lúc 07:34 SA
 -- Phiên bản máy phục vụ: 10.1.21-MariaDB
 -- Phiên bản PHP: 5.6.30
 
@@ -36,10 +36,31 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `CapNhatHoaDon` (IN `mahd` INT)  beg
 	
 end$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CapNhatSoLuongMon` (IN `mand` INT, IN `mon` INT, IN `sttban` INT, IN `hd` INT, IN `thoigian` DATETIME, IN `trangthai` INT, IN `soluong` INT)  begin
+	delete from `ct_dm` where sohd = hd and mamon = mon;
+	insert into `ct_dm`(mand,mamon,sttban,sohd,thoigian,trangthai,soluong) values(mand,mon,sttban,hd,thoigian,trangthai,soluong);
+	call CapNhatHoaDon(hd);
+end$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `CapNhatTrangThaiHoaDon` (IN `mahd` INT, IN `soban` INT, IN `ttHoaDon` INT, IN `ttBan` INT)  begin
 	update `ct_dm` set trangthai = ttHoaDon where sohd = mahd;
 	update ban set trangthai = ttBan where sttban = soban;
 	
+end$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `XoaMon` (IN `mon` INT, IN `hd` INT, IN `soban` INT)  begin
+    if exists(select * from `ct_dm` where sohd = hd)
+		then
+			delete from `ct_dm` where sohd = hd and mamon = mon;
+			
+			if exists(select * from `ct_dm` where sohd = hd)
+				then
+					call CapNhatHoaDon(hd);
+				else
+					delete from hoadon where sohd = hd;
+					update ban set trangthai = 0 where sttban = soban;
+			end if;
+	end if;
 end$$
 
 DELIMITER ;
@@ -141,9 +162,6 @@ INSERT INTO `ct_dm` (`STT`, `MAND`, `MAMON`, `STTBAN`, `SOHD`, `THOIGIAN`, `TRAN
 (8, 3, 6, 10, 3, '2018-07-18 14:18:29', 0, 6),
 (9, 3, 4, 7, 2, '2018-07-18 14:25:33', 0, 1),
 (11, 3, 6, 4, 16, '2018-07-19 09:57:44', 0, 1),
-(14, 3, 3, 2, 17, '2018-07-19 09:59:17', 1, 4),
-(15, 3, 3, 2, 17, '2018-07-19 14:36:47', 1, 2),
-(16, 3, 5, 2, 17, '2018-07-19 14:36:47', 1, 2),
 (17, 3, 3, 3, 20, '2018-07-19 14:41:11', 1, 1),
 (18, 3, 5, 3, 20, '2018-07-19 14:41:11', 1, 4),
 (19, 3, 4, 3, 20, '2018-07-19 14:42:08', 1, 3),
@@ -152,24 +170,6 @@ INSERT INTO `ct_dm` (`STT`, `MAND`, `MAMON`, `STTBAN`, `SOHD`, `THOIGIAN`, `TRAN
 (28, 3, 4, 8, 21, '2018-07-20 13:13:43', 0, 1),
 (29, 3, 5, 8, 21, '2018-07-20 13:13:43', 0, 3),
 (30, 3, 3, 1, 7, '2018-07-20 13:19:36', 0, 1),
-(31, 3, 4, 2, 17, '2018-07-21 08:57:03', 1, 2),
-(32, 3, 3, 2, 17, '2018-07-21 08:57:03', 1, 1),
-(33, 3, 3, 2, 17, '2018-07-21 11:18:12', 1, 1),
-(34, 4, 3, 2, 17, '2018-07-31 10:30:11', 1, 1),
-(35, 4, 3, 2, 17, '2018-07-31 10:32:33', 1, 1),
-(36, 4, 4, 2, 17, '2018-07-31 10:36:53', 1, 1),
-(37, 4, 4, 2, 17, '2018-07-31 10:38:28', 1, 1),
-(38, 4, 3, 2, 17, '2018-07-31 11:19:11', 1, 1),
-(39, 4, 3, 2, 17, '2018-07-31 11:19:21', 1, 1),
-(40, 4, 4, 2, 17, '2018-07-31 11:20:18', 1, 1),
-(41, 4, 3, 2, 17, '2018-07-31 11:21:14', 1, 1),
-(45, 2, 3, 2, 17, '2018-01-01 00:00:00', 1, 2),
-(46, 4, 3, 2, 17, '2018-01-01 00:00:00', 1, 10),
-(47, 4, 5, 2, 17, '2018-07-31 11:48:14', 1, 1),
-(48, 4, 5, 2, 17, '2018-07-31 11:48:25', 1, 1),
-(49, 4, 7, 2, 17, '2018-07-31 11:54:39', 1, 1),
-(50, 4, 4, 2, 17, '2018-07-31 12:48:22', 1, 1),
-(51, 4, 7, 2, 17, '2018-07-31 12:48:34', 1, 1),
 (52, 4, 3, 6, 22, '2018-07-31 12:58:38', 1, 1),
 (53, 4, 3, 6, 22, '2018-07-31 12:59:38', 1, 1),
 (54, 4, 4, 6, 22, '2018-07-31 13:00:33', 1, 1),
@@ -284,7 +284,6 @@ INSERT INTO `hoadon` (`SOHD`, `MAND`, `THOIGIAN`, `TRIGIA`) VALUES
 (14, NULL, NULL, 120000),
 (15, NULL, NULL, 120000),
 (16, NULL, NULL, 63000),
-(17, NULL, NULL, 1267000),
 (18, NULL, NULL, 130000),
 (19, NULL, NULL, 130000),
 (20, NULL, NULL, 115000),
@@ -616,7 +615,7 @@ ALTER TABLE `congviec`
 -- AUTO_INCREMENT cho bảng `ct_dm`
 --
 ALTER TABLE `ct_dm`
-  MODIFY `STT` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `STT` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
 --
 -- AUTO_INCREMENT cho bảng `dichvu`
 --
@@ -626,7 +625,7 @@ ALTER TABLE `dichvu`
 -- AUTO_INCREMENT cho bảng `hoadon`
 --
 ALTER TABLE `hoadon`
-  MODIFY `SOHD` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `SOHD` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 --
 -- AUTO_INCREMENT cho bảng `khuyenmai`
 --
