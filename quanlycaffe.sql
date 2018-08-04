@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th8 02, 2018 lúc 07:34 SA
+-- Thời gian đã tạo: Th8 04, 2018 lúc 04:59 SA
 -- Phiên bản máy phục vụ: 10.1.21-MariaDB
 -- Phiên bản PHP: 5.6.30
 
@@ -48,6 +48,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `CapNhatTrangThaiHoaDon` (IN `mahd` 
 	
 end$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `TimKiemMon` (IN `keyword` VARCHAR(50))  begin
+	select * from mon 
+    where ten like CONCAT('%',keyword,'%') or mamon like CONCAT('%',keyword,'%') 
+	or maloai like CONCAT('%',keyword,'%') or dongia like CONCAT('%',keyword,'%') limit 6;
+end$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `XoaMon` (IN `mon` INT, IN `hd` INT, IN `soban` INT)  begin
     if exists(select * from `ct_dm` where sohd = hd)
 		then
@@ -82,14 +88,14 @@ CREATE TABLE `ban` (
 
 INSERT INTO `ban` (`STTBAN`, `TRANGTHAI`) VALUES
 (1, 1),
-(2, 0),
+(2, 1),
 (3, 0),
-(4, 1),
+(4, 0),
 (5, 1),
 (6, 1),
 (7, 1),
 (8, 1),
-(9, 0),
+(9, 1),
 (10, 1);
 
 -- --------------------------------------------------------
@@ -161,7 +167,6 @@ INSERT INTO `ct_dm` (`STT`, `MAND`, `MAMON`, `STTBAN`, `SOHD`, `THOIGIAN`, `TRAN
 (7, 3, 5, 10, 3, '2018-07-18 14:18:29', 0, 1),
 (8, 3, 6, 10, 3, '2018-07-18 14:18:29', 0, 6),
 (9, 3, 4, 7, 2, '2018-07-18 14:25:33', 0, 1),
-(11, 3, 6, 4, 16, '2018-07-19 09:57:44', 0, 1),
 (17, 3, 3, 3, 20, '2018-07-19 14:41:11', 1, 1),
 (18, 3, 5, 3, 20, '2018-07-19 14:41:11', 1, 4),
 (19, 3, 4, 3, 20, '2018-07-19 14:42:08', 1, 3),
@@ -177,7 +182,13 @@ INSERT INTO `ct_dm` (`STT`, `MAND`, `MAMON`, `STTBAN`, `SOHD`, `THOIGIAN`, `TRAN
 (56, 4, 4, 6, 22, '2018-07-31 13:22:46', 1, 2),
 (57, 4, 4, 6, 22, '2018-08-01 10:09:54', 1, 2),
 (58, 4, 3, 6, 23, '2018-08-01 10:14:09', 0, 2),
-(59, 4, 6, 6, 23, '2018-08-01 10:14:21', 0, 4);
+(59, 4, 6, 6, 23, '2018-08-01 10:14:21', 0, 4),
+(87, 4, 6, 4, 16, '2018-08-03 10:05:07', 1, 2),
+(88, 4, 4, 2, 24, '2018-08-03 10:08:57', 0, 2),
+(89, 4, 4, 2, 24, '2018-08-03 10:13:07', 0, 3),
+(90, 4, 6, 2, 24, '2018-08-03 10:13:07', 0, 1),
+(91, 4, 5, 9, 25, '2018-08-04 09:55:42', 0, 1),
+(92, 4, 7, 9, 25, '2018-08-04 09:55:42', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -283,13 +294,15 @@ INSERT INTO `hoadon` (`SOHD`, `MAND`, `THOIGIAN`, `TRIGIA`) VALUES
 (13, NULL, NULL, 23000),
 (14, NULL, NULL, 120000),
 (15, NULL, NULL, 120000),
-(16, NULL, NULL, 63000),
+(16, NULL, NULL, 80000),
 (18, NULL, NULL, 130000),
 (19, NULL, NULL, 130000),
 (20, NULL, NULL, 115000),
 (21, NULL, NULL, 235000),
 (22, NULL, NULL, 669000),
-(23, NULL, NULL, 206000);
+(23, NULL, NULL, 206000),
+(24, NULL, NULL, 640000),
+(25, NULL, NULL, 29000);
 
 -- --------------------------------------------------------
 
@@ -615,7 +628,7 @@ ALTER TABLE `congviec`
 -- AUTO_INCREMENT cho bảng `ct_dm`
 --
 ALTER TABLE `ct_dm`
-  MODIFY `STT` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
+  MODIFY `STT` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 --
 -- AUTO_INCREMENT cho bảng `dichvu`
 --
