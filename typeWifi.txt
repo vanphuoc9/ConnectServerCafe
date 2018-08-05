@@ -1,0 +1,1 @@
+WIFI:T:WPA;S:Phone;P:123456789;;
